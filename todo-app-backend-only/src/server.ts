@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { Hono, type Context } from 'hono';
 import { cors } from 'hono/cors';
 
@@ -18,6 +19,9 @@ app.get("/api/todos", getTodos)
     .delete("/api/todo/delete/:id", deleteTodo)
 
 app.notFound(c => c.json({ message: "Not Found", code: "NOT_FOUND" }, 404))
-serve({ fetch: app.fetch, port: Number(process.env['SERVER_PORT'] || 3000) }, (info) => {
+
+const envPort = process.env['SERVER_PORT'] ? parseInt(process.env['SERVER_PORT'], 10) : null;
+const port = (envPort && !isNaN(envPort) && envPort > 0 && envPort < 65536) ? envPort : 3000;
+serve({ fetch: app.fetch, port }, (info) => {
     console.info(`Server is running on http://localhost:${info.port}`)
 })

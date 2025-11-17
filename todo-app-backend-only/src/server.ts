@@ -18,7 +18,7 @@ process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.once('SIGUSR2', () => shutdown('SIGUSR2'));
 process.on('unhandledRejection', (reason) => { console.error({ reason }, 'Unhandled promise rejection'); shutdown('UNHANDLED_REJECTION'); });
 process.on('uncaughtException', (err) => { console.error({ err }, 'Uncaught exception'); shutdown('UNCAUGHT_EXCEPTION'); });
-const envPort = process.env['SERVER_PORT'] ? parseInt(process.env['SERVER_PORT'], 10) : null;
+const envPort = env['SERVER_PORT'] ? parseInt(env['SERVER_PORT'], 10) : null;
 
 const port = (envPort && !isNaN(envPort) && envPort > 0 && envPort < 65536) ? envPort : 3000;
 serve({ fetch: app.fetch, port }, (info) => {

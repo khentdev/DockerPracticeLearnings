@@ -1,0 +1,70 @@
+name: todo-prod
+
+services:
+  postgres_db:
+    image: postgres:18.1
+    restart: always
+    environment:
+      POSTGRES_DB: todos_prod
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: prisma
+    ports:
+      - "5433:5432"
+    networks:
+      - prod-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d todos_prod" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql
+    command: postgres -c listen_addresses='*'
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:prisma@postgres_db:5432/todos_prod?schema=public
+      SERVER_PORT: 4000
+      NODE_ENV: production
+    networks:
+      - prod-network
+    command: npx prisma migrate deploy
+    restart: on-failure
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: postgresql://postgres:prisma@postgres_db:5432/todos_prod?schema=public
+      SERVER_PORT: 4000
+      NODE_ENV: production
+    networks:
+      - prod-network
+    restart: always
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  prod-network:
+    name: prod-network
+
+volumes:
+  postgres_data_prod:

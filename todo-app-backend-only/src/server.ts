@@ -23,5 +23,5 @@ const envPort = process.env['SERVER_PORT'] ? parseInt(process.env['SERVER_PORT']
 const port = (envPort && !isNaN(envPort) && envPort > 0 && envPort < 65536) ? envPort : 3000;
 serve({ fetch: app.fetch, port }, (info) => {
     const NODE_ENV = env['NODE_ENV'] ?? "development"
-    console.info(`Server is running on http://localhost:${info.port}: Running in ${NODE_ENV} mode`)
+    console.info(`Server is running on http://localhost:${info.port}: Running in ${NODE_ENV} mode.`)
 })

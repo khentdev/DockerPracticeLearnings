@@ -1,5 +1,6 @@
-import { Hono } from "hono";
-import todoRoutes from "./route.js";
+import { Hono } from 'hono';
+
+import todoRoutes from './route.js';
 
 export const registerRoutes = (app: Hono) => {
     app.get("/", (c) => c.redirect("/health-ping"));

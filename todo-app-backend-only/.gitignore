@@ -4,3 +4,5 @@ package*.json
 /dist
 /generated
 /generated/prisma
+.env.production
+.env.development

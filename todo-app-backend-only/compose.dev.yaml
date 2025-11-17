@@ -1,0 +1,67 @@
+name: todo-dev
+
+services:
+  postgres_db:
+    image: postgres:18.1
+    restart: always
+    environment:
+      POSTGRES_DB: todos_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: prisma
+    ports:
+      - "5432:5432"
+    networks:
+      - dev-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d todos_dev" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql
+    command: postgres -c listen_addresses='*'
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  app-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 3000
+      NODE_ENV: development
+      POSTGRES_DB: todos_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: prisma
+      DATABASE_URL: postgresql://postgres:prisma@postgres_db:5432/todos_dev?schema=public
+    networks:
+      - dev-network
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /usr/src/app/src
+        - action: sync
+          path: ./prisma
+          target: /usr/src/app/prisma
+        - action: sync
+          path: ./tsconfig.json
+          target: /usr/src/app/tsconfig.json
+        - action: rebuild
+          path: ./package.json
+        - action: rebuild
+          path: ./Dockerfile.dev
+
+networks:
+  dev-network:
+    name: dev-network
+
+volumes:
+  postgres_data_dev:

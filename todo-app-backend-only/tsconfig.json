@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "rootDir": "./",
+    "rootDir": ".",
     "outDir": "./dist",
 
     "module": "nodenext",
@@ -29,6 +29,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "prisma","prisma.config.ts"],
+  "include": ["src/**/*", "prisma","prisma.config.ts","generated"],
   "exclude": ["node_modules", "dist"]
 }

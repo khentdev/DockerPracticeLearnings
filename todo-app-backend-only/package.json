@@ -1,42 +1,30 @@
-commit 772addd80b024ebc1f0554d645009e94485e4895
-Author: Kenneth Cacho <khentplays@gmail.com>
-Date:   Mon Nov 17 17:36:15 2025 +0800
-
-    feat(docker): add fully functional dev and prod containers and fix package.json files
-
-diff --git a/todo-app-backend-only/package.json b/todo-app-backend-only/package.json
-index b322fcd..3c646e4 100644
---- a/todo-app-backend-only/package.json
-+++ b/todo-app-backend-only/package.json
-@@ -4,10 +4,29 @@
-   "description": "",
-   "main": "index.js",
-   "scripts": {
--    "test": "echo \"Error: no test specified\" && exit 1"
-+    "test": "echo \"Error: no test specified\" && exit 1",
-+    "build": "tsc",
-+    "dev": "nodemon --watch src --exec tsx src/server.ts",
-+    "db:deploy": "npx prisma migrate deploy && npx prisma generate"
-   },
-   "keywords": [],
-   "author": "",
-   "license": "ISC",
--  "type": "commonjs"
-+  "type": "module",
-+  "dependencies": {
-+    "@hono/node-server": "^1.19.6",
-+    "@prisma/adapter-pg": "^6.19.0",
-+    "@prisma/client": "^6.19.0",
-+    "express": "^4.21.2",
-+    "hono": "^4.10.6",
-+    "nodemon": "^3.1.11",
-+    "pg": "^8.16.3"
-+  },
-+  "devDependencies": {
-+    "@types/node": "^24.10.1",
-+    "prisma": "^6.19.0",
-+    "ts-node": "^10.9.2",
-+    "tsx": "^4.20.6",
-+    "typescript": "^5.9.3"
-+  }
- }
+{
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "dev": "nodemon --watch src --exec tsx src/server.ts",
+    "db:deploy": "npx prisma migrate deploy && npx prisma generate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@hono/node-server": "^1.19.6",
+    "@prisma/adapter-pg": "^6.19.0",
+    "@prisma/client": "^6.19.0",
+    "express": "^4.21.2",
+    "hono": "^4.10.6",
+    "nodemon": "^3.1.11",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "prisma": "^6.19.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,74 +1,85 @@
 # Docker Practice: Todo App Backend
 
-I want to test this to see if it eliminates the "works on my machine" problem. Feel free to run and test it yourself.
-
-This project is a simple TODO backend that runs in Docker containers. It has both **dev** and **prod** setups, mainly for learning and experimenting - very simple, but useful for practice.
+A simple TODO backend for testing Docker and eliminating the "works on my machine" problem. Includes both **dev** and **prod** configurations for learning purposes.
 
 ---
 
-### Prerequisite
+## Prerequisites
 
-You must have **Docker** installed on your machine to run this project.
-
----
-
-# Instructions to Run the Code
-
-1. Open this folder in your integrated terminal.
-2. Choose the environment you want to run:
-    - **Development**:
-        
-        Run the following command:
-        
-        ```bash
-        docker compose -f compose.dev.yaml up --build
-        
-        ```
-        
-    - **Production** (to simulate production with different environment variables):
-        
-        Run the following command:
-        
-        ```bash
-        docker compose -f compose.prod.yaml up --build
-        
-        ```
-        
+- **Docker** installed on your machine
 
 ---
 
-### API Routes for Testing (Postman / HTTP Client)
+## Quick Start
 
-**Note:** Port is `3000` for dev and `4000` for prod.
+### Development Setup
 
-- **Get all todos:**
-    
-    `GET <http://localhost:3000/api/todos`>
-    
-- **Create a todo:**
-    
-    `POST <http://localhost:3000/api/todos/create`>
-    
-    **Body:**
-    
-    ```json
-    {
-      "title": "Your title",
-      "notes": "Optional notes"
-    }
-    
-    ```
-    
+Runs locally with built-in Postgres. Works out of the box.
 
-### Update a Todo
+```bash
+docker compose -f compose.dev.yaml up --build
 
-**Endpoint:**
+```
 
-`PUT <http://localhost:3000/api/todos/update/:id`>
+Access at `http://localhost:3000`
 
-**Params:**
+### Production Setup
 
-- `id` (todo ID)
+Uses external database (Neon).
+
+1. Create a Neon database
+2. Create `.env` file:
+
+```bash
+   DATABASE_URL=postgresql://username:password@your-neon-host.neon.tech/dbname?sslmode=require
+
+```
+
+1. Run:
+
+```bash
+   docker compose -f compose.prod.yaml up --build
+
+```
+
+Access at `http://localhost:4000`
+
+---
+
+## API Endpoints
+
+**Note:** Dev uses port `3000`, prod uses port `4000`
+
+### Get All Todos
+
+```
+GET <http://localhost:3000/api/todos>
+
+```
+
+### Create Todo
+
+```
+POST <http://localhost:3000/api/todos/create>
+
+```
+
+**Body:**
+
+```json
+{
+  "title": "Your title",
+  "notes": "Optional notes"
+}
+
+```
+
+### Update Todo
+
+```
+PUT <http://localhost:3000/api/todos/update/:id>
+
+```
 
 **Body:**
 
@@ -80,38 +91,50 @@ You must have **Docker** installed on your machine to run this project.
 
 ```
 
-### Delete a Todo
+### Delete Todo
 
-**Endpoint:**
+```
+DELETE <http://localhost:3000/api/todos/delete/:id>
 
-`DELETE <http://localhost:3000/api/todos/delete/:id`>
+```
 
-**Params:**
-
-- `id` (todo ID)
-
-**Example using cURL:**
+**Example with cURL:**
 
 ```bash
 curl -X DELETE <http://localhost:3000/api/todos/delete/1>
 
 ```
 
-# Stop containers
+---
 
-```docker
+## Stopping Containers
+
+**Development:**
+
+```bash
 docker compose -f compose.dev.yaml down
+
 ```
 
-### or for production
+**Production:**
 
-```docker
+```bash
 docker compose -f compose.prod.yaml down
+
 ```
 
-### Optional: Remove volumes if you want a clean state:
+**Remove volumes (clean slate):**
 
-```docker
+```bash
 docker compose -f compose.dev.yaml down -v
 docker compose -f compose.prod.yaml down -v
+
 ```
+
+---
+
+## Project Structure
+
+- `compose.dev.yaml` - Local development with Postgres
+- `compose.prod.yaml` - Production setup with external DB
+- `.env.example` - Template for environment variables
